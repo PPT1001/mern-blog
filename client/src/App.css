@@ -390,3 +390,10 @@ div.read:hover {
   text-decoration: none;
   box-shadow: 0 10px 15px -3px #0000004f, 0 4px 6px -2px #488aec17;
 }
+
+div.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}

@@ -1,25 +1,49 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams, Navigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { Navigate } from "react-router-dom";
 import Editor from "../Editor";
 
-export default function CreatePost() {
+export default function EditPost() {
   const [title, setTitle] = useState("");
   const [summary, setSummary] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const { id } = useParams();
 
-  async function createNewPost(ev) {
+  useEffect(() => {
+    async function getPost() {
+      const response = await fetch(`http://localhost:4000/post/${id}`, {
+        credentials: "include",
+      });
+      const data = await response.json();
+      setTitle(data.title);
+      setImage(data.image);
+      setSummary(data.summary);
+      setContent(data.content);
+    }
+    getPost();
+  }, []);
+
+  if (redirect) {
+    return <Navigate to={"/post/" + id} />;
+  }
+
+  async function updatePost(ev) {
     const data = new FormData();
     data.set("title", title);
     data.set("summary", summary);
     data.set("content", content);
-    data.set("image", image[0]);
+    data.set("id", id);
+    console.log(id);
+    if (image.length > 0) {
+      data.set("image", image[0]);
+    }
+    console.log(data);
     ev.preventDefault();
-    const response = await fetch("http://localhost:4000/newPost", {
-      method: "POST",
+    const response = await fetch("http://localhost:4000/updatePost", {
+      method: "PUT",
       body: data,
       credentials: "include",
     });
@@ -29,12 +53,8 @@ export default function CreatePost() {
     }
   }
 
-  if (redirect) {
-    return <Navigate to="/" />;
-  }
-
   return (
-    <form onSubmit={createNewPost}>
+    <form onSubmit={updatePost}>
       <input
         type="title"
         placeholder="Title"
@@ -50,7 +70,7 @@ export default function CreatePost() {
       />
       <input type="file" onChange={(ev) => setImage(ev.target.files)} />
       <Editor onChange={setContent} value={content} />
-      <button style={{ marginTop: "10px" }}>Create Post</button>
+      <button style={{ marginTop: "10px" }}>Update Post</button>
     </form>
   );
 }
