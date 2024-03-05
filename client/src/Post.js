@@ -1,18 +1,29 @@
-export default function Post() {
-    return (
-        <div className='post'>
-        <div className='image'>
-          <img src ='https://miro.medium.com/v2/resize:fit:720/format:webp/1*UGICleQp4h7D-TQYpe0z5A.png' alt='blog' />
-        </div>
-        <div className='texts'>
-          <h2>Still Smart to Learn DevOps in 2024?</h2>
-          <p className='info'>
-            <span className="Author">Pragash Sasitharan</span>
-            <span className='time'>06/01/2024 06:59</span>
-          </p>
-          <p className='summary'>I know that many of us have this question in mind and it is important for everyone in the tech industry, 
-            no matter if you are a beginner or an expert. We cannot waste time on something that might be useless by the next year!</p>
-        </div>
+import { format } from "date-fns";
+import { Link } from "react-router-dom";
+
+export default function Post({
+  _id,
+  title,
+  summary,
+  content,
+  image,
+  createdAt,
+  author,
+}) {
+  return (
+    <div className="post">
+      <div className="image">
+        <img src={`http://localhost:4000/${image}`} alt="blog" />
       </div>
-    );
+      <div className="texts">
+        <h2>{title}</h2>
+        <p className="info">
+          <span className="Author">{author.username}</span>
+          <time>{format(new Date(createdAt), "MMMM d, yyyy HH:mm")}</time>
+        </p>
+        <p className="summary">{summary}</p>
+        <Link to={`/post/${_id}`}>Read More</Link>
+      </div>
+    </div>
+  );
 }

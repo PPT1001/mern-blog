@@ -49,6 +49,7 @@ export default function CreatePost() {
     const response = await fetch("http://localhost:4000/newPost", {
       method: "POST",
       body: data,
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -72,6 +73,7 @@ export default function CreatePost() {
         type="summary"
         placeholder="Summary"
         value={summary}
+        maxLength={200}
         onChange={(ev) => setSummary(ev.target.value)}
       />
       <input type="file" onChange={(ev) => setImage(ev.target.files)} />

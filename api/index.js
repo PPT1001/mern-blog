@@ -17,6 +17,7 @@ const secret = "hfwfiwihfiuwhuhihoiqddodpkwpd";
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 require("dotenv").config();
 
@@ -75,19 +76,27 @@ app.post("/newPost", uploadMiddleware.single("image"), async (req, res) => {
     if (err) throw err;
   });
 
-  const { title, summary, content } = req.body;
-  const postDoc = await Post.create({
-    title,
-    summary,
-    content,
-    image: newPath,
-  });
+  const { token } = req.cookies;
 
-  res.json(postDoc);
+  jwt.verify(token, secret, {}, async (err, info) => {
+    if (err) throw err;
+    const { title, summary, content } = req.body;
+    const postDoc = await Post.create({
+      title,
+      summary,
+      content,
+      image: newPath,
+      author: info.id,
+    });
+    res.json(postDoc);
+  });
 });
 
 app.get("/post", async (req, res) => {
-  const posts = await Post.find();
+  const posts = await Post.find()
+    .populate("author", ["username"])
+    .sort({ createdAt: -1 })
+    .limit(10);
   res.json(posts);
 });
 
