@@ -22,7 +22,9 @@ export default function Post({
           <time>{format(new Date(createdAt), "MMMM d, yyyy HH:mm")}</time>
         </p>
         <p className="summary">{summary}</p>
-        <Link to={`/post/${_id}`}>Read More</Link>
+        <Link to={`/post/${_id}`}>
+          <div className="read">Read More</div>
+        </Link>
       </div>
     </div>
   );
