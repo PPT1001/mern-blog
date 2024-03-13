@@ -23,6 +23,10 @@ require("dotenv").config();
 
 mongoose.connect(process.env.MONGODB_URL);
 
+app.get("/", (req, res) => {
+  res.json("Hello World");
+});
+
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -56,10 +60,12 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, (err, info) => {
-    if (err) throw err;
-    res.json(info);
-  });
+  if (token) {
+    jwt.verify(token, secret, {}, (err, info) => {
+      if (err) throw err;
+      res.json(info);
+    });
+  }
 });
 
 app.post("/logout", (req, res) => {
@@ -137,3 +143,4 @@ app.get("/post", async (req, res) => {
 });
 
 app.listen(4000);
+console.log("Server started on http://localhost:4000");

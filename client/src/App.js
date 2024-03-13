@@ -1,4 +1,4 @@
-import "./App.css";
+import "./App2.css";
 // import Header from './Header';
 import Layout from "./Layout";
 // import Post from './Post';
